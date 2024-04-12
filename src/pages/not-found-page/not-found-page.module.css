@@ -1,0 +1,18 @@
+.root {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  display: grid;
+  text-align: center;
+}
+
+.link {
+  color: #4481c3;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
