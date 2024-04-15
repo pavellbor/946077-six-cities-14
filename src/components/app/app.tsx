@@ -4,22 +4,23 @@ import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import LoginPage from '../../pages/login-page/login-page';
 import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../constants/common';
 import ProtectedRoute from '../protected-route/protected-route';
 import { HelmetProvider } from 'react-helmet-async';
+import { OfferPreview } from '../../types/offer-preview';
 
 type AppProps = {
-  offersCount: number;
+  offersPreview: OfferPreview[];
 };
 
-function App({ offersCount }: AppProps): JSX.Element {
+function App({ offersPreview }: AppProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
           <Route
             path={AppRoute.Root}
-            element={<MainPage offersCount={offersCount} />}
+            element={<MainPage offers={offersPreview} />}
           />
           <Route
             path={AppRoute.Login}
@@ -39,11 +40,11 @@ function App({ offersCount }: AppProps): JSX.Element {
                 restrictedFor={AuthorizationStatus.NoAuth}
                 redirectTo={AppRoute.Login}
               >
-                <FavoritesPage />
+                <FavoritesPage offers={offersPreview} />
               </ProtectedRoute>
             }
           />
-          <Route path={`${AppRoute.Offer}:/id`} element={<OfferPage />} />
+          <Route path={`${AppRoute.Offer}/:offerId`} element={<OfferPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
