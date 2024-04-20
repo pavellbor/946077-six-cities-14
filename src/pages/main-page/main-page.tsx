@@ -1,57 +1,50 @@
+import { useState } from 'react';
+import CitiesList from '../../components/cities-list/cities-list';
+import Map from '../../components/map/map';
 import OffersList from '../../components/offers-list/offers-list';
+import {
+  CITIES,
+  CityLocation,
+  DEFAULT_SELECTED_CITY,
+} from '../../constants/cities';
 import MainPageLayout from '../../layouts/main-page-layout/main-page-layout';
-import { OfferPreview } from '../../types/offer-preview';
+import { CityName } from '../../types/city';
+import { OfferPreview } from '../../types/offer';
+import { capitalizeFirstLetter } from '../../helpers/common';
 
 type MainPageProps = {
   offers: OfferPreview[];
 };
 
 function MainPage({ offers }: MainPageProps): JSX.Element {
+  const [selectedCity, setSelectedCity] = useState<CityName>(
+    DEFAULT_SELECTED_CITY
+  );
+  const [activeOffer, setActiveOffer] = useState<OfferPreview | null>(null);
+  const cityLocation = CityLocation[selectedCity];
+  const filteredOffers = offers.filter(
+    (offer) => offer.city.name === selectedCity
+  );
+
+  const points = offers.map((offer) => offer.location);
+
   return (
     <MainPageLayout>
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
-        <section className="locations container">
-          <ul className="locations__list tabs__list">
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Paris</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Cologne</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Brussels</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item tabs__item--active">
-                <span>Amsterdam</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Hamburg</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Dusseldorf</span>
-              </a>
-            </li>
-          </ul>
-        </section>
+        <CitiesList
+          cities={CITIES}
+          active={selectedCity}
+          onChange={(city) => setSelectedCity(city)}
+        />
       </div>
       <div className="cities">
         <div className="cities__places-container container">
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
             <b className="places__found">
-              {offers.length} places to stay in Amsterdam
+              {filteredOffers.length} places to stay in{' '}
+              {capitalizeFirstLetter(selectedCity)}
             </b>
             <form className="places__sorting" action="#" method="get">
               <span className="places__sorting-caption">Sort by</span>
@@ -80,11 +73,19 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               </ul>
             </form>
             <div className="cities__places-list places__list tabs__content">
-              <OffersList offers={offers} block="cities" />
+              <OffersList
+                offers={filteredOffers}
+                block="cities"
+                onHover={(offerId) => setActiveOffer(offerId)}
+              />
             </div>
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map"></section>
+            <Map
+              city={cityLocation}
+              activePoint={activeOffer?.location}
+              points={points}
+            />
           </div>
         </div>
       </div>

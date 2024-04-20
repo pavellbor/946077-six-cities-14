@@ -1,16 +1,19 @@
-import { useState } from 'react';
-import { OfferPreview } from '../../types/offer-preview';
+import { OfferPreview } from '../../types/offer';
 import OfferCard from '../offer-card/offer-card';
 
 type OffersListProps = {
   offers: OfferPreview[];
   block: 'cities' | 'favorites' | 'near-places';
   size?: 'small' | 'large';
+  onHover: (offer: OfferPreview | null) => void;
 };
 
-function OffersList({ offers, block, size }: OffersListProps): JSX.Element {
-  const [, setActiveCard] = useState<string | null>();
-
+function OffersList({
+  offers,
+  block,
+  size,
+  onHover,
+}: OffersListProps): JSX.Element {
   return (
     <>
       {offers.map((offer) => (
@@ -19,8 +22,8 @@ function OffersList({ offers, block, size }: OffersListProps): JSX.Element {
           block={block}
           size={size}
           key={offer.id}
-          onMouseOver={() => setActiveCard(offer.id)}
-          onMouseLeave={() => setActiveCard(null)}
+          onMouseOver={() => onHover(offer)}
+          onMouseLeave={() => onHover(null)}
         />
       ))}
     </>

@@ -12,6 +12,13 @@ export type Offer = {
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
+};
+
+export type OfferPreview = Offer & {
+  previewImage: string;
+};
+
+export type OfferDetails = Offer & {
   description: string;
   bedrooms: number;
   goods: string[];

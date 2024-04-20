@@ -2,15 +2,17 @@ import { useParams } from 'react-router-dom';
 import OfferReviewsForm from '../../components/offer-reviews-form/offer-reviews-form';
 import { Comment } from '../../types/comment';
 import OfferPageLayout from '../../layouts/favorites-page-layout/offer-page-layout';
-import { Offer } from '../../types/offer';
+import { OfferDetails } from '../../types/offer';
 import NotFoundPage from '../not-found-page/not-found-page';
 import { capitalizeFirstLetter, percentifyRating } from '../../helpers/common';
 import OfferHostUser from '../../components/offer-host-user/offer-host-user';
-import { useOffersContext } from '../../context/useOffers.hook';
 
-function OfferPage(): JSX.Element {
+type OfferPageProps = {
+  offers: OfferDetails[];
+};
+
+function OfferPage({ offers }: OfferPageProps): JSX.Element {
   const { offerId } = useParams();
-  const { offers } = useOffersContext();
 
   const currentOffer = offers.find((offer) => offer.id === offerId);
 

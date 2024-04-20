@@ -1,4 +1,4 @@
-import { OfferPreview } from '../types/offer-preview';
+import { OfferPreview } from '../types/offer';
 
 export const offersPreview: OfferPreview[] = [
   {

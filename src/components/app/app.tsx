@@ -8,12 +8,14 @@ import { AppRoute, AuthorizationStatus } from '../../constants/common';
 import ProtectedRoute from '../protected-route/protected-route';
 import { HelmetProvider } from 'react-helmet-async';
 import { OfferPreview } from '../../types/offer-preview';
+import { OfferDetails } from '../../types/offer';
 
 type AppProps = {
   offersPreview: OfferPreview[];
+  offersDetails: OfferDetails[];
 };
 
-function App({ offersPreview }: AppProps): JSX.Element {
+function App({ offersPreview, offersDetails }: AppProps): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
@@ -44,7 +46,10 @@ function App({ offersPreview }: AppProps): JSX.Element {
               </ProtectedRoute>
             }
           />
-          <Route path={`${AppRoute.Offer}/:offerId`} element={<OfferPage />} />
+          <Route
+            path={`${AppRoute.Offer}/:offerId`}
+            element={<OfferPage offers={offersDetails} />}
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

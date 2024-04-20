@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/app';
 import { offersPreview } from './mocks/offers-preview';
-import { OffersProvider } from './context/offers.provider';
+import { offersDetails } from './mocks/offers-details';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,8 +10,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <OffersProvider>
-      <App offersPreview={offersPreview} />
-    </OffersProvider>
+    <App offersPreview={offersPreview} offersDetails={offersDetails} />
   </React.StrictMode>
 );
