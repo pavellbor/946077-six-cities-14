@@ -8,11 +8,13 @@ import {
   URL_MARKER_DEFAULT,
 } from '../../constants/map';
 import useMap from '../../hooks/use-map';
+import cn from 'classnames';
 
 type MapProps = {
   city: Omit<Location, 'zoom'>;
   points: Location[];
   activePoint?: Location;
+  parentClass: string;
 };
 
 const defaultCustomIcon = new Icon({
@@ -27,7 +29,12 @@ const activeCustomIcon = new Icon({
   iconAnchor: [14, 40],
 });
 
-function Map({ city, points, activePoint }: MapProps): JSX.Element {
+function Map({
+  city,
+  points,
+  activePoint,
+  parentClass,
+}: MapProps): JSX.Element {
   const mapRef = useRef<HTMLElement | null>(null);
   const map = useMap(mapRef, {
     center: {
@@ -58,7 +65,7 @@ function Map({ city, points, activePoint }: MapProps): JSX.Element {
     }
   }, [map, city, points, activePoint]);
 
-  return <section ref={mapRef} className="cities__map map"></section>;
+  return <section ref={mapRef} className={cn(parentClass, 'map')}></section>;
 }
 
 export default Map;

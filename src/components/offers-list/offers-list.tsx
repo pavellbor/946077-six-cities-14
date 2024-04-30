@@ -5,7 +5,7 @@ type OffersListProps = {
   offers: OfferPreview[];
   block: 'cities' | 'favorites' | 'near-places';
   size?: 'small' | 'large';
-  onHover: (offer: OfferPreview | null) => void;
+  onHover?: (offer: OfferPreview | null) => void;
 };
 
 function OffersList({
@@ -22,8 +22,8 @@ function OffersList({
           block={block}
           size={size}
           key={offer.id}
-          onMouseOver={() => onHover(offer)}
-          onMouseLeave={() => onHover(null)}
+          onMouseOver={() => onHover?.(offer)}
+          onMouseLeave={() => onHover?.(null)}
         />
       ))}
     </>

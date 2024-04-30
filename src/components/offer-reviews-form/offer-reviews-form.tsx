@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Comment } from '../../types/comment';
+import { NewComment } from '../../types/comment';
 import OfferReviewsFormRating from '../offer-reviews-form-rating/offer-reviews-form-rating';
 
 type OfferReviewsFormProps = {
-  onSubmit: (comment: Comment) => void;
+  onSubmit: (comment: NewComment) => void;
 };
 
 function OfferReviewsForm({ onSubmit }: OfferReviewsFormProps): JSX.Element {

@@ -5,7 +5,7 @@ import {
   concatToPath,
   percentifyRating,
 } from '../../helpers/common';
-import { OfferPreview } from '../../types/offer-preview';
+import { OfferPreview } from '../../types/offer';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../constants/common';
 

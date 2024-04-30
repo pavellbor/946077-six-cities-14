@@ -85,6 +85,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               city={cityLocation}
               activePoint={activeOffer?.location}
               points={points}
+              parentClass='cities__map'
             />
           </div>
         </div>
