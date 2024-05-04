@@ -7,8 +7,7 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import { AppRoute, AuthorizationStatus } from '../../constants/common';
 import ProtectedRoute from '../protected-route/protected-route';
 import { HelmetProvider } from 'react-helmet-async';
-import { OfferPreview } from '../../types/offer-preview';
-import { OfferDetails } from '../../types/offer';
+import { OfferDetails, OfferPreview } from '../../types/offer';
 
 type AppProps = {
   offersPreview: OfferPreview[];

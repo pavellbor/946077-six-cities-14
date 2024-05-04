@@ -3,7 +3,7 @@ import { Location } from './location';
 
 export type City = {
   name: string;
-  location: Location;
+  location: Location
 };
 
 export type CityName = (typeof CITIES)[number];

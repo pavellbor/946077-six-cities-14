@@ -1,32 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CitiesList from '../../components/cities-list/cities-list';
 import Map from '../../components/map/map';
 import OffersList from '../../components/offers-list/offers-list';
-import {
-  CITIES,
-  CityLocation,
-  DEFAULT_SELECTED_CITY,
-} from '../../constants/cities';
+import { CITIES, CityLocation } from '../../constants/cities';
 import MainPageLayout from '../../layouts/main-page-layout/main-page-layout';
-import { CityName } from '../../types/city';
 import { OfferPreview } from '../../types/offer';
 import { capitalizeFirstLetter } from '../../helpers/common';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchOffers, setActiveCity } from '../../store/actions';
+import Sorting from '../../components/sorting/sorting';
+import { SortingType } from '../../types/sorting';
+import { DEFAULT_ACTIVE_SORTING } from '../../constants/sorting';
 
-type MainPageProps = {
-  offers: OfferPreview[];
-};
+function MainPage(): JSX.Element {
+  const selectedCity = useAppSelector((state) => state.activeCity);
+  const offers = useAppSelector((state) => state.offers);
 
-function MainPage({ offers }: MainPageProps): JSX.Element {
-  const [selectedCity, setSelectedCity] = useState<CityName>(
-    DEFAULT_SELECTED_CITY
-  );
-  const [activeOffer, setActiveOffer] = useState<OfferPreview | null>(null);
   const cityLocation = CityLocation[selectedCity];
+
+  const [activeOffer, setActiveOffer] = useState<OfferPreview | null>(null);
+
   const filteredOffers = offers.filter(
     (offer) => offer.city.name === selectedCity
   );
 
   const points = offers.map((offer) => offer.location);
+
+  const [sorting, setSorting] = useState<SortingType>(DEFAULT_ACTIVE_SORTING);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOffers());
+  }, [dispatch]);
 
   return (
     <MainPageLayout>
@@ -35,7 +41,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
         <CitiesList
           cities={CITIES}
           active={selectedCity}
-          onChange={(city) => setSelectedCity(city)}
+          onChange={(city) => dispatch(setActiveCity(city))}
         />
       </div>
       <div className="cities">
@@ -46,32 +52,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               {filteredOffers.length} places to stay in{' '}
               {capitalizeFirstLetter(selectedCity)}
             </b>
-            <form className="places__sorting" action="#" method="get">
-              <span className="places__sorting-caption">Sort by</span>
-              <span className="places__sorting-type" tabIndex={0}>
-                Popular
-                <svg className="places__sorting-arrow" width="7" height="4">
-                  <use xlinkHref="#icon-arrow-select"></use>
-                </svg>
-              </span>
-              <ul className="places__options places__options--custom places__options--opened">
-                <li
-                  className="places__option places__option--active"
-                  tabIndex={0}
-                >
-                  Popular
-                </li>
-                <li className="places__option" tabIndex={0}>
-                  Price: low to high
-                </li>
-                <li className="places__option" tabIndex={0}>
-                  Price: high to low
-                </li>
-                <li className="places__option" tabIndex={0}>
-                  Top rated first
-                </li>
-              </ul>
-            </form>
+            <Sorting active={sorting} onChange={(type) => setSorting(type)} />
             <div className="cities__places-list places__list tabs__content">
               <OffersList
                 offers={filteredOffers}
@@ -85,7 +66,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               city={cityLocation}
               activePoint={activeOffer?.location}
               points={points}
-              parentClass='cities__map'
+              parentClass="cities__map"
             />
           </div>
         </div>
