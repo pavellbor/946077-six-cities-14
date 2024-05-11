@@ -1,12 +1,39 @@
-import { reviews } from '../../mocks/reviews';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { NewComment } from '../../types/comment';
 import OfferReviewsForm from '../offer-reviews-form/offer-reviews-form';
 import OfferReviewsList from '../offer-reviews-list/offer-reviews-list';
+import { addReviewAction, fetchReviewsAction } from '../../store/api-actions';
+import { AuthorizationStatus } from '../../constants/common';
+import { setReviews } from '../../store/actions';
 
-function OfferReviews(): JSX.Element {
-  function handleOfferReviewsFormSubmit(comment: NewComment) {
+type OfferReviewsProps = {
+  offerId: string;
+};
+
+function OfferReviews({ offerId }: OfferReviewsProps): JSX.Element {
+  const authorizationStatus = useAppSelector(
+    (state) => state.authorizationStatus
+  );
+  const reviews = useAppSelector((state) => state.reviews);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchReviewsAction(offerId));
+
+    return () => {
+      dispatch(setReviews([]));
+    };
+  }, [dispatch, offerId]);
+
+  async function handleOfferReviewsFormSubmit(
+    review: NewComment,
+    clearForm: () => void
+  ) {
     // eslint-disable-next-line no-console
-    console.log(comment);
+    await dispatch(addReviewAction({ offerId, review }));
+    clearForm();
   }
 
   return (
@@ -16,7 +43,9 @@ function OfferReviews(): JSX.Element {
         <span className="reviews__amount">{reviews.length}</span>
       </h2>
       <OfferReviewsList reviews={reviews} />
-      <OfferReviewsForm onSubmit={handleOfferReviewsFormSubmit} />
+      {authorizationStatus === AuthorizationStatus.Auth && (
+        <OfferReviewsForm onSubmit={handleOfferReviewsFormSubmit} />
+      )}
     </section>
   );
 }

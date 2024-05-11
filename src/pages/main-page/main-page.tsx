@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CitiesList from '../../components/cities-list/cities-list';
 import Map from '../../components/map/map';
 import OffersList from '../../components/offers-list/offers-list';
@@ -7,14 +7,18 @@ import MainPageLayout from '../../layouts/main-page-layout/main-page-layout';
 import { OfferPreview } from '../../types/offer';
 import { capitalizeFirstLetter } from '../../helpers/common';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchOffers, setActiveCity } from '../../store/actions';
+import { setActiveCity } from '../../store/actions';
 import Sorting from '../../components/sorting/sorting';
 import { SortingType } from '../../types/sorting';
 import { DEFAULT_ACTIVE_SORTING } from '../../constants/sorting';
+import { fetchOffersAction } from '../../store/api-actions';
 
 function MainPage(): JSX.Element {
   const selectedCity = useAppSelector((state) => state.activeCity);
   const offers = useAppSelector((state) => state.offers);
+  const isOffersDataLoading = useAppSelector(
+    (state) => state.isOffersDataLoading
+  );
 
   const cityLocation = CityLocation[selectedCity];
 
@@ -30,8 +34,13 @@ function MainPage(): JSX.Element {
 
   const dispatch = useAppDispatch();
 
+  const handleCityChange = useCallback(
+    (city) => dispatch(setActiveCity(city)),
+    []
+  );
+
   useEffect(() => {
-    dispatch(fetchOffers());
+    dispatch(fetchOffersAction());
   }, [dispatch]);
 
   return (
@@ -41,7 +50,7 @@ function MainPage(): JSX.Element {
         <CitiesList
           cities={CITIES}
           active={selectedCity}
-          onChange={(city) => dispatch(setActiveCity(city))}
+          onChange={handleCityChange}
         />
       </div>
       <div className="cities">
@@ -56,6 +65,7 @@ function MainPage(): JSX.Element {
             <div className="cities__places-list places__list tabs__content">
               <OffersList
                 offers={filteredOffers}
+                isLoading={isOffersDataLoading}
                 block="cities"
                 onHover={(offerId) => setActiveOffer(offerId)}
               />

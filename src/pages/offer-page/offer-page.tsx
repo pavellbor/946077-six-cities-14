@@ -1,25 +1,47 @@
 import { useParams } from 'react-router-dom';
 import OfferPageLayout from '../../layouts/favorites-page-layout/offer-page-layout';
-import { OfferDetails } from '../../types/offer';
-import NotFoundPage from '../not-found-page/not-found-page';
 import { capitalizeFirstLetter, percentifyRating } from '../../helpers/common';
 import OfferHostUser from '../../components/offer-host-user/offer-host-user';
 import OfferReviews from '../../components/offer-reviews/offer-reviews';
 import Map from '../../components/map/map';
-import { OffersNearby } from '../../mocks/offers-nearby';
 import OffersList from '../../components/offers-list/offers-list';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import {
+  fetchNearPlacesAction,
+  fetchOfferAction,
+} from '../../store/api-actions';
+import Spinner from '../../components/spinner/spinner';
+import { dropOffer, setNearPlaces } from '../../store/actions';
+import { OfferDetails } from '../../types/offer';
 
-type OfferPageProps = {
-  offers: OfferDetails[];
-};
+function OfferPage(): JSX.Element {
+  const { offerId } = useParams<{ offerId: string }>();
 
-function OfferPage({ offers }: OfferPageProps): JSX.Element {
-  const { offerId } = useParams();
+  const currentOffer = useAppSelector((state) => state.offer);
+  const isOfferLoading = useAppSelector((state) => state.isOfferDataLoading);
+  const nearPlaces = useAppSelector((state) => state.nearPlaces);
 
-  const currentOffer = offers.find((offer) => offer.id === offerId);
+  const dispatch = useAppDispatch();
 
-  if (!currentOffer) {
-    return <NotFoundPage />;
+  useEffect(() => {
+    dispatch(fetchOfferAction(offerId as string));
+
+    return () => {
+      dispatch(dropOffer());
+    };
+  }, [dispatch, offerId]);
+
+  useEffect(() => {
+    dispatch(fetchNearPlacesAction(offerId as string));
+
+    return () => {
+      dispatch(setNearPlaces([]));
+    };
+  }, [dispatch, offerId]);
+
+  if (isOfferLoading || !currentOffer) {
+    return <Spinner />;
   }
 
   return (
@@ -57,7 +79,9 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
             <div className="offer__rating rating">
               <div className="offer__stars rating__stars">
                 <span
-                  style={{ width: `${percentifyRating(currentOffer.rating)}%` }}
+                  style={{
+                    width: `${percentifyRating(currentOffer.rating)}%`,
+                  }}
                 ></span>
                 <span className="visually-hidden">Rating</span>
               </div>
@@ -97,12 +121,12 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
                 <p className="offer__text">{currentOffer.description}</p>
               </div>
             </div>
-            <OfferReviews />
+            <OfferReviews offerId={offerId as string} />
           </div>
         </div>
         <Map
           city={currentOffer.city.location}
-          points={OffersNearby.map((offer) => offer.location)}
+          points={nearPlaces.map((offer) => offer.location)}
           parentClass="offer__map"
         />
       </section>
@@ -112,7 +136,7 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
             Other places in the neighbourhood
           </h2>
           <div className="near-places__list places__list">
-            <OffersList offers={OffersNearby} block='near-places'/>
+            <OffersList offers={nearPlaces} block="near-places" />
           </div>
         </section>
       </div>

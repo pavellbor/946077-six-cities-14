@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import MainPage from '../../pages/main-page/main-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import LoginPage from '../../pages/login-page/login-page';
@@ -7,22 +7,15 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import { AppRoute, AuthorizationStatus } from '../../constants/common';
 import ProtectedRoute from '../protected-route/protected-route';
 import { HelmetProvider } from 'react-helmet-async';
-import { OfferDetails, OfferPreview } from '../../types/offer';
+import browserHistory from '../../browser-history';
+import HistoryRouter from '../history-router/history-router';
 
-type AppProps = {
-  offersPreview: OfferPreview[];
-  offersDetails: OfferDetails[];
-};
-
-function App({ offersPreview, offersDetails }: AppProps): JSX.Element {
+function App(): JSX.Element {
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HistoryRouter history={browserHistory}>
         <Routes>
-          <Route
-            path={AppRoute.Root}
-            element={<MainPage offers={offersPreview} />}
-          />
+          <Route path={AppRoute.Root} element={<MainPage />} />
           <Route
             path={AppRoute.Login}
             element={
@@ -41,17 +34,14 @@ function App({ offersPreview, offersDetails }: AppProps): JSX.Element {
                 restrictedFor={AuthorizationStatus.NoAuth}
                 redirectTo={AppRoute.Login}
               >
-                <FavoritesPage offers={offersPreview} />
+                <FavoritesPage offers={[]} />
               </ProtectedRoute>
             }
           />
-          <Route
-            path={`${AppRoute.Offer}/:offerId`}
-            element={<OfferPage offers={offersDetails} />}
-          />
+          <Route path={`${AppRoute.Offer}/:offerId`} element={<OfferPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </HelmetProvider>
   );
 }

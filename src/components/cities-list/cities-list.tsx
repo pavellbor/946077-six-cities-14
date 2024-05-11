@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import { CityName } from '../../types/city';
+import { memo } from 'react';
 
 type CitiesListProps = {
   cities: readonly CityName[];
@@ -32,4 +33,4 @@ function CitiesList({
   );
 }
 
-export default CitiesList;
+export default memo(CitiesList);

@@ -3,7 +3,7 @@ import { NewComment } from '../../types/comment';
 import OfferReviewsFormRating from '../offer-reviews-form-rating/offer-reviews-form-rating';
 
 type OfferReviewsFormProps = {
-  onSubmit: (comment: NewComment) => void;
+  onSubmit: (comment: NewComment, clearForm: () => void) => Promise<void>;
 };
 
 function OfferReviewsForm({ onSubmit }: OfferReviewsFormProps): JSX.Element {
@@ -18,10 +18,15 @@ function OfferReviewsForm({ onSubmit }: OfferReviewsFormProps): JSX.Element {
     setComment(evt.target.value);
   }
 
+  function clearForm() {
+    setComment('');
+    setRating('');
+  }
+
   function handleFormSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
 
-    onSubmit({ rating: Number(rating), comment });
+    onSubmit({ rating: Number(rating), comment }, clearForm);
   }
 
   return (
@@ -41,6 +46,7 @@ function OfferReviewsForm({ onSubmit }: OfferReviewsFormProps): JSX.Element {
         name="review"
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={handleCommentChange}
+        value={comment}
         // eslint-disable-next-line react/jsx-closing-tag-location
       ></textarea>
       <div className="reviews__button-wrapper">

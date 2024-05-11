@@ -18,4 +18,15 @@ export enum NameSpace {
   Favorites = 'FAVORITES',
   Reviews = 'REVIEWS',
   User = 'User',
+  App = 'App',
 }
+
+export enum APIRoute {
+  Offers = '/offers',
+  Favorites = '/favorites',
+  Comments = '/comments',
+  Login = '/login',
+  Logout = '/logout',
+}
+
+export const TIMEOUT_SHOW_ERROR = 4000;

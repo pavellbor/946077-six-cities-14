@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 import { ReactNode } from 'react';
 import cn from 'classnames';
 

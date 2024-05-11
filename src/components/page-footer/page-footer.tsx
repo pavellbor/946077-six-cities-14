@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 function PageFooter(): JSX.Element {
   return (
     <footer className="footer container">
@@ -14,4 +16,4 @@ function PageFooter(): JSX.Element {
   );
 }
 
-export default PageFooter;
+export default memo(PageFooter);
